@@ -2,33 +2,42 @@ How to run the service
 
 Clone the repository:
 
-> git clone https://github.com/DanielaSfregola/quiz-management-service.git
-Get to the spray-crud folder:
+> git clone https://github.com/tarek-ottey/elmenus.git
+Get to the q5 folder:
 
-> cd spray-crud
+> cd q5
 Run the service:
 
 > sbt run
-The service runs on port 5000 by default.
+The service runs on port 4000 by default.
 
 Usage
 
-Question entity:
+Restaurant entity:
 
-case class Question(id: String, title: String, text: String)
-Create a question
+case class Restaurant(var uuid: String, data: Data)
+
+Data Entity:
+
+case class Data (enName: String, arName: String, state: String, routingMethod: String, logo: String,coverPhoto: String,
+                 enDescription: String, arDescription: String, shortNumber: String, facebookLink:String,
+                 twitterLink: String, youtubeLink: String, website: String, onlinePayment: Boolean, client: Boolean,
+                 pendingInfo: Boolean, pendingMenu: Boolean, closed: Boolean)
+				 
+				 
+Create a restaurant
 
 Request:
 
 curl -v -H "Content-Type: application/json" \
-	 -X POST http://localhost:5000/questions \
-	 -d '{"id": "test", "title": "MyTitle", "text":"The text of my question"}'
-Response if the question has been created:
+	 -X POST http://localhost:4000/api/restaurant \
+	 -d '{"uuid": "", "data": {"enName": "English name value", "arName": "Arabic name value", ..., "closed": false}}'
+Response if the restaurant has been created:
 
 *   Trying ::1...
-* Connected to localhost (::1) port 5000 (#0)
+* Connected to localhost (::1) port 4000 (#0)
 > POST /questions HTTP/1.1
-> Host: localhost:5000
+> Host: localhost:4000
 > User-Agent: curl/7.43.0
 > Accept: */*
 > Content-Type: application/json
@@ -38,17 +47,17 @@ Response if the question has been created:
 < HTTP/1.1 201 Created
 < Server: Quiz Management Service REST API
 < Date: Sat, 21 Nov 2015 11:37:11 GMT
-< Location: http://localhost:5000/questions/test
+< Location: http://localhost:4000/api/restaurant/test
 < Content-Length: 0
 <
 * Connection #0 to host localhost left intact
 
-Response if the question with the specified id already exists:
+Response if the restaurant with the specified id already exists:
 
 *   Trying ::1...
-* Connected to localhost (::1) port 5000 (#0)
+* Connected to localhost (::1) port 4000 (#0)
 > POST /questions HTTP/1.1
-> Host: localhost:5000
+> Host: localhost:4000
 > User-Agent: curl/7.43.0
 > Accept: */*
 > Content-Type: application/json
@@ -60,17 +69,19 @@ Response if the question with the specified id already exists:
 < Date: Sat, 21 Nov 2015 11:53:34 GMT
 < Content-Length: 0
 <
-Get a question
+
+
+Get a restaurant
 
 Request:
 
-curl -v http://localhost:5000/questions/test
+curl -v http://localhost:4000/api/restaurant/
 Response if the question exists:
 
 *   Trying ::1...
-* Connected to localhost (::1) port 5000 (#0)
+* Connected to localhost (::1) port 4000 (#0)
 > GET /questions/test HTTP/1.1
-> Host: localhost:5000
+> Host: localhost:4000
 > User-Agent: curl/7.43.0
 > Accept: */*
 >
@@ -81,13 +92,13 @@ Response if the question exists:
 < Content-Length: 64
 <
 * Connection #0 to host localhost left intact
-{"id":"test","title":"MyTitle","text":"The text of my question"}
+[{"uuid": "", "data": {"enName": "English name value", "arName": "Arabic name value", ..., "closed": false}}]
 Response if the question does not exist:
 
 *   Trying ::1...
-* Connected to localhost (::1) port 5000 (#0)
+* Connected to localhost (::1) port 4000 (#0)
 > GET /questions/non-existing-question HTTP/1.1
-> Host: localhost:5000
+> Host: localhost:4000
 > User-Agent: curl/7.43.0
 > Accept: */*
 >
@@ -97,19 +108,20 @@ Response if the question does not exist:
 < Content-Length: 0
 <
 * Connection #0 to host localhost left intact
+
 Update a question
 
 Request:
 
 curl -v -H "Content-Type: application/json" \
-	 -X PUT http://localhost:5000/questions/test \
-	 -d '{"text":"Another text"}'
+	 -X PUT http://localhost:4000/api/restaurant/{uuid} \
+	 -d '{"uuid": "", "data": {"enName": "English name value", "arName": "Arabic name value", ..., "closed": false}}'
 Response if the question has been updated:
 
 *   Trying ::1...
-* Connected to localhost (::1) port 5000 (#0)
-> PUT /questions/test HTTP/1.1
-> Host: localhost:5000
+* Connected to localhost (::1) port 4000 (#0)
+> PUT /questions/uuid HTTP/1.1
+> Host: localhost:4000
 > User-Agent: curl/7.43.0
 > Accept: */*
 > Content-Type: application/json
@@ -123,13 +135,13 @@ Response if the question has been updated:
 < Content-Length: 53
 <
 * Connection #0 to host localhost left intact
-{"id":"test","title":"MyTitle","text":"Another text"}
-Response if the question could not be updated:
+{"uuid": "", "data": {"enName": "English name value", "arName": "Arabic name value", ..., "closed": false}}
+Response if the restaurant could not be updated:
 
 *   Trying ::1...
-* Connected to localhost (::1) port 5000 (#0)
-> PUT /questions/non-existing-question HTTP/1.1
-> Host: localhost:5000
+* Connected to localhost (::1) port 4000 (#0)
+> PUT /restaurant/non-existing-restaurant HTTP/1.1
+> Host: localhost:4000
 > User-Agent: curl/7.43.0
 > Accept: */*
 > Content-Type: application/json
@@ -142,17 +154,17 @@ Response if the question could not be updated:
 < Content-Length: 0
 <
 * Connection #0 to host localhost left intact
-Delete a question
+Delete a restaurant
 
 Request:
 
-curl -v -X DELETE http://localhost:5000/questions/test
+curl -v -X DELETE http://localhost:4000/api/restaurant/{uuid}
 Response:
 
 *   Trying ::1...
-* Connected to localhost (::1) port 5000 (#0)
-> DELETE /questions/test HTTP/1.1
-> Host: localhost:5000
+* Connected to localhost (::1) port 4000 (#0)
+> DELETE /restaurant/test HTTP/1.1
+> Host: localhost:4000
 > User-Agent: curl/7.43.0
 > Accept: */*
 >
